@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+    <title>Авторизация | Крастакт</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #2d2d2d;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .login-card {
+	        display: none;
+            background: #252525;
+            border-radius: 28px;
+            padding: 40px 32px;
+            text-align: center;
+            border: 1px solid #3a3a3a;
+        }
+
+        .logo {
+            margin-bottom: 32px;
+        }
+
+        .logo-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            border-radius: 20px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+        }
+
+        .logo-icon i {
+            font-size: 2.5rem;
+            color: white;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            color: white;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #3a3a3a;
+            border-top-color: #dc2626;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 12px;
+            margin-top: 16px;
+            font-size: 0.9rem;
+        }
+
+        .error {
+            background: rgba(220, 38, 38, 0.2);
+            color: #f87171;
+            border: 1px solid rgba(220, 38, 38, 0.3);
+        }
+
+        .success {
+            background: rgba(34, 197, 94, 0.2);
+            color: #4ade80;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .info {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .manual-login {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #3a3a3a;
+        }
+
+        .manual-login p {
+            color: #adb5bd;
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+        }
+
+        .manual-login a {
+            color: #dc2626;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <div class="login-card">
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-fire"></i>
+            </div>
+            <h1>Крастакт</h1>
+        </div>
+
+        <div id="status">
+            <div class="spinner"></div>
+            <p style="color: #adb5bd;">Выполняется вход...</p>
+        </div>
+
+        <div id="message"></div>
+
+        <div class="manual-login">
+            <p>⬅️ Если перенаправление не происходит</p>
+            <a href="login.html">Перейти на страницу входа</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyBX0fnvfVbsfTiuksc2JtebtmaltgAS87U",
+        authDomain: "krastakt.firebaseapp.com",
+        databaseURL: "https://krastakt-default-rtdb.firebaseio.com",
+        projectId: "krastakt",
+        storageBucket: "krastakt.firebasestorage.app",
+        messagingSenderId: "53885771537",
+        appId: "1:53885771537:web:d293118c77625af7c136b0"
+    };
+
+    function getUrlParams() {
+        const params = new URLSearchParams(window.location.search);
+        return {
+            email: params.get('email'),
+            pass: params.get('pass')
+        };
+    }
+
+    function showMessage(type, text) {
+        const messageDiv = document.getElementById('message');
+        messageDiv.innerHTML = `<div class="message ${type}">${text}</div>`;
+    }
+
+    function showStatus(type, text) {
+        const statusDiv = document.getElementById('status');
+        if (type === 'loading') {
+            statusDiv.innerHTML = `
+                <div class="spinner"></div>
+                <p style="color: #adb5bd;">${text}</p>
+            `;
+        } else {
+            statusDiv.innerHTML = `<p style="color: #adb5bd;">${text}</p>`;
+        }
+    }
+
+    async function signIn(email, password) {
+        const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${firebaseConfig.apiKey}`;
+        
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                email, 
+                password, 
+                returnSecureToken: true 
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+            let errorMessage = "Ошибка входа";
+            switch (data.error?.message) {
+                case 'EMAIL_NOT_FOUND':
+                    errorMessage = "Пользователь не найден";
+                    break;
+                case 'INVALID_PASSWORD':
+                    errorMessage = "Неверный пароль";
+                    break;
+                case 'USER_DISABLED':
+                    errorMessage = "Аккаунт заблокирован";
+                    break;
+                default:
+                    errorMessage = data.error?.message || "Ошибка входа";
+            }
+            throw new Error(errorMessage);
+        }
+        
+        return {
+            localId: data.localId,
+            idToken: data.idToken,
+            email: data.email,
+            refreshToken: data.refreshToken
+        };
+    }
+
+    async function fetchUserData(userId, idToken) {
+        const url = `https://krastakt-default-rtdb.firebaseio.com/users/${userId}.json?auth=${idToken}`;
+        const response = await fetch(url);
+        if (!response.ok) return null;
+        const data = await response.json();
+        return data;
+    }
+
+    async function autoLogin() {
+        const { email, pass } = getUrlParams();
+        
+        if (!email || !pass) {
+            showStatus('error', 'Не указаны параметры');
+            showMessage('error', 'Используйте формат: log.html?email=почта&pass=пароль');
+            return;
+        }
+        
+        showStatus('loading', `Вход для: ${email}`);
+        
+        try {
+            const userData = await signIn(email, pass);
+            
+            const userDbData = await fetchUserData(userData.localId, userData.idToken);
+            
+            const currentUser = {
+                localId: userData.localId,
+                idToken: userData.idToken,
+                email: userData.email,
+                refreshToken: userData.refreshToken,
+                displayName: userDbData?.displayName || email.split('@')[0],
+                username: userDbData?.username || email.split('@')[0]
+            };
+            
+            localStorage.setItem('volgura_user', JSON.stringify(currentUser));
+            
+            showStatus('success', 'Вход выполнен успешно!');
+            showMessage('success', `Добро пожаловать, ${currentUser.displayName}! Перенаправление...`);
+            
+            setTimeout(() => {
+                window.location.href = 'feed.html';
+            }, 1500);
+            
+        } catch (error) {
+            console.error('Login error:', error);
+            showStatus('error', 'Ошибка входа');
+            showMessage('error', error.message);
+        }
+    }
+    
+    autoLogin();
+</script>
+</body>
+</html>
