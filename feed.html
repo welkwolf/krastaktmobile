@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+    <title>Крастакт</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #fef5f5;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+    min-height: 100vh;
+    width: 100%;
+    background: #2d2d2d;
+    display: flex;
+    flex-direction: column;
+}
+
+      
+        .header {
+    background: #3b3b3b7a;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .logo i {
+            font-size: 1.8rem;
+        }
+        .nav-icons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        .nav-btn {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: white;
+            transition: 0.2s;
+            padding: 8px;
+            border-radius: 12px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .nav-btn.active {
+            background: rgba(255,255,255,0.3);
+        }
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .feed-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .create-post {
+    background: #373737;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(220,38,38,0.08);
+    /* border: 1px solid #fee2e2; */
+}
+        .post-input-area {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .post-input-area textarea {
+            width: 100%;
+            padding: 14px;
+            border: 1.5px solid #fecaca;
+            border-radius: 16px;
+            font-size: 0.95rem;
+            resize: vertical;
+            font-family: 'Inter', sans-serif;
+            transition: 0.2s;
+        }
+        .post-input-area textarea:focus {
+            outline: none;
+            border-color: #dc2626;
+            box-shadow: 0 0 0 3px rgba(220,38,38,0.1);
+        }
+        .image-preview {
+            position: relative;
+            display: inline-block;
+        }
+        .image-preview img {
+            max-width: 100%;
+            max-height: 250px;
+            border-radius: 16px;
+            object-fit: cover;
+        }
+        .remove-image {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .post-actions-bar {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .image-upload-btn {
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1.5px solid #fecaca;
+    padding: 10px 18px;
+    border-radius: 40px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: 0.2s;
+}
+        .image-upload-btn:hover {
+            background: #fee2e2;
+        }
+        .submit-post-btn {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-left: auto;
+            transition: transform 0.2s;
+        }
+        .submit-post-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .post-card {
+    background: #252525;
+    border-radius: 20px;
+    padding: 20px;
+    /* box-shadow: 0 2px 8px rgba(220,38,38,0.08); */
+    /* border: 1px solid #fee2e2; */
+    transition: 0.2s;
+}
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            cursor: pointer;
+        }
+        .post-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+		.video-preview {
+    position: relative;
+    display: inline-block;
+}
+.video-preview video {
+    max-width: 100%;
+    max-height: 250px;
+    border-radius: 16px;
+}
+.remove-media {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.post-video {
+    margin: 12px 0;
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+}
+.post-video video {
+    width: 100%;
+    max-height: 500px;
+    border-radius: 16px;
+    outline: none;
+}
+        .post-author {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #ff7a7a;
+}
+        .post-time {
+            font-size: 0.7rem;
+            color: #adb5bd;
+            margin-top: 4px;
+        }
+        .post-text {
+            margin: 12px 0;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: white;
+        }
+        .post-image {
+            margin: 12px 0;
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .post-image img {
+            width: 100%;
+            max-height: 500px;
+            object-fit: cover;
+            border-radius: 16px;
+        }
+        .post-stats {
+            display: flex;
+            gap: 20px;
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 1px solid #fee2e2;
+        }
+        .like-btn, .comment-btn, .delete-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #6c757d;
+            transition: 0.2s;
+            padding: 6px 12px;
+            border-radius: 40px;
+        }
+        .like-btn.liked {
+            color: #dc2626;
+        }
+        .like-btn:hover, .comment-btn:hover { 
+            background: #fef2f2; 
+        }
+        .delete-btn:hover { 
+            background: #fee2e2; 
+            color: #dc2626; 
+        }
+        
+        .comments-section {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #fee2e2;
+        }
+        .comment {
+            padding: 10px 0;
+            font-size: 0.85rem;
+            color: #495057;
+            border-bottom: 1px solid #fef2f2;
+        }
+        .comment strong { 
+            color: #dc2626; 
+        }
+        .add-comment {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .add-comment input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid #fecaca;
+            border-radius: 40px;
+            font-size: 0.85rem;
+        }
+        .add-comment button {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 40px;
+            cursor: pointer;
+        }
+        
+        .no-posts {
+            text-align: center;
+            padding: 60px 20px;
+            color: #adb5bd;
+        }
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: #dc2626;
+        }
+
+        @media (max-width: 600px) {
+            .main-content {
+                padding: 12px;
+            }
+            .post-card {
+                padding: 16px;
+            }
+            .logo {
+                font-size: 1.3rem;
+            }
+            .logo i {
+                font-size: 1.5rem;
+            }
+            .nav-btn {
+                width: 35px;
+                height: 35px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+    const firebaseConfig = {
+  apiKey: "AIzaSyBX0fnvfVbsfTiuksc2JtebtmaltgAS87U",
+  authDomain: "krastakt.firebaseapp.com",
+  databaseURL: "https://krastakt-default-rtdb.firebaseio.com",
+  projectId: "krastakt",
+  storageBucket: "krastakt.firebasestorage.app",
+  messagingSenderId: "53885771537",
+  appId: "1:53885771537:web:d293118c77625af7c136b0"
+};
+    
+     const cloudinaryConfig = {
+        cloudName: "dbjexsgbh",
+        uploadPreset: "viagal"  
+    };
+    let selectedMediaFile = null;
+     let currentMediaPreview = null;
+     let selectedMediaType = null;
+    let currentUser = null;
+    let posts = {};
+    let selectedImageFile = null;
+    let currentImagePreview = null;
+    let currentView = 'feed';
+    
+    const appDiv = document.getElementById('app');
+    
+    function getRTDBUrl(path) {
+        return `https://krastakt-default-rtdb.firebaseio.com/${path}.json`;
+    }
+    
+    async function fetchPostsFromRTDB() {
+        if (!currentUser) return {};
+        const url = getRTDBUrl('posts') + `?auth=${currentUser.idToken}`;
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("Ошибка загрузки");
+        const data = await response.json();
+        return data || {};
+    }
+    
+    async function savePostToRTDB(postId, postData) {
+        const url = getRTDBUrl(`posts/${postId}`) + `?auth=${currentUser.idToken}`;
+        const response = await fetch(url, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(postData)
+        });
+        if (!response.ok) throw new Error("Ошибка сохранения");
+        return await response.json();
+    }
+    
+    async function deletePostFromRTDB(postId) {
+        const url = getRTDBUrl(`posts/${postId}`) + `?auth=${currentUser.idToken}`;
+        const response = await fetch(url, { method: 'DELETE' });
+        if (!response.ok) throw new Error("Ошибка удаления");
+    }
+    
+    async function updatePostInRTDB(postId, updates) {
+        const url = getRTDBUrl(`posts/${postId}`) + `?auth=${currentUser.idToken}`;
+        const response = await fetch(url, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updates)
+        });
+        if (!response.ok) throw new Error("Ошибка обновления");
+        return await response.json();
+    }
+    async function fetchUsers() {
+        const url = getRTDBUrl('users');
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("Ошибка загрузки пользователей");
+        const data = await response.json();
+        return data || {};
+    }
+    async function uploadImageToCloudinary(file) {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', cloudinaryConfig.uploadPreset);
+        
+        const url = `https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/image/upload`;
+        const response = await fetch(url, {
+            method: 'POST',
+            body: formData
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error?.message || "Ошибка загрузки");
+        return data.secure_url;
+    }
+    
+async function createPost(text, mediaUrl = null, mediaType = null) {
+    if (!text.trim() && !mediaUrl) return;
+    
+    const postId = Date.now().toString();
+    const newPost = {
+        id: postId,
+        text: text.trim(),
+        mediaUrl: mediaUrl,
+        mediaType: mediaType,  // 'image' или 'video'
+        authorId: currentUser.localId,
+        authorName: currentUser.displayName || currentUser.email.split('@')[0],
+        authorEmail: currentUser.email,
+        createdAt: Date.now(),
+        likes: {},
+        comments: []
+    };
+    
+    try {
+        await savePostToRTDB(postId, newPost);
+        await loadDataAndRender();
+    } catch (err) {
+        alert("Ошибка: " + err.message);
+    }
+}
+    
+    async function toggleLike(postId, post) {
+        const userId = currentUser.localId;
+        const likes = post.likes || {};
+        
+        if (likes[userId]) {
+            delete likes[userId];
+        } else {
+            likes[userId] = true;
+        }
+        
+        try {
+            await updatePostInRTDB(postId, { likes: likes });
+            await loadDataAndRender();
+        } catch (err) {
+            alert("Ошибка: " + err.message);
+        }
+    }
+    
+    async function addComment(postId, post, commentText) {
+        if (!commentText.trim()) return;
+        
+        const comments = post.comments || [];
+        const newComment = {
+            id: Date.now().toString(),
+            text: commentText,
+            authorName: currentUser.displayName || currentUser.email.split('@')[0],
+            authorId: currentUser.localId,
+            createdAt: Date.now()
+        };
+        comments.push(newComment);
+        
+        try {
+            await updatePostInRTDB(postId, { comments: comments });
+            await loadDataAndRender();
+        } catch (err) {
+            alert("Ошибка: " + err.message);
+        }
+    }
+    
+    async function deletePost(postId, post) {
+        if (currentUser.localId !== post.authorId) {
+            alert("Вы можете удалять только свои посты!");
+            return;
+        }
+        if (confirm("Удалить пост?")) {
+            try {
+                await deletePostFromRTDB(postId);
+                await loadDataAndRender();
+            } catch (err) {
+                alert("Ошибка: " + err.message);
+            }
+        }
+    }
+    
+async function loadDataAndRender() {
+    if (!currentUser) {
+        window.location.href = 'login.html';
+        return;
+    }
+    
+    try {
+        const [postsData, usersData] = await Promise.all([
+            fetchPostsFromRTDB(),
+            fetchUsers()
+        ]);
+        
+        posts = postsData;
+        users = usersData;
+        renderFeed();
+    } catch (err) {
+        console.error(err);
+        renderFeed();
+    }
+}
+    
+function renderFeed() {
+    const postsArray = Object.values(posts).sort((a, b) => b.createdAt - a.createdAt);
+    const likeCount = (likes) => Object.keys(likes || {}).length;
+    
+    const getUserAvatar = (authorId, authorName) => {
+        const user = users[authorId];
+        if (user && user.avatar) {
+            return `<img src="${user.avatar}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+        }
+        return `<img src="empty-avatar.png" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+    };
+    
+    const html = `
+        <div class="app-container">
+            
+            <div class="main-content">
+                <div class="feed-container">
+                    <div class="create-post">
+                        <div class="post-input-area">
+                            <textarea id="postTextarea" rows="3" placeholder="Что нового? Поделитесь мыслями..."></textarea>
+                            ${currentImagePreview ? `
+                                <div class="image-preview">
+                                    <img src="${currentImagePreview}" alt="Preview">
+                                    <div class="remove-image" onclick="window.removeSelectedImage()">×</div>
+                                </div>
+                            ` : ''}
+							${currentMediaPreview ? `
+    <div class="${selectedMediaType === 'video' ? 'video-preview' : 'image-preview'}">
+        ${selectedMediaType === 'video' ? 
+            `<video controls style="max-width:100%;max-height:250px;border-radius:16px;">
+                <source src="${currentMediaPreview}" type="video/mp4">
+            </video>` : 
+            `<img src="${currentMediaPreview}" alt="Preview">`
+        }
+        <div class="remove-media" onclick="window.removeSelectedMedia()">×</div>
+    </div>
+` : ''}
+                            <div class="post-actions-bar">
+                                <label class="image-upload-btn">
+                                    <i class="fas fa-image"></i> Фото
+                                    <input type="file" accept="image/*" style="display: none;" id="imageInput" onchange="window.handleImageSelect(event)">
+                                </label>
+								<label class="image-upload-btn">
+                                    <i class="fas fa-video"></i> Видео
+                                    <input type="file" accept="video/*" style="display: none;" id="videoInput" onchange="window.handleFileSelect(event, 'video')">
+                                </label>
+                                <button class="submit-post-btn" onclick="window.submitNewPost()">
+                                   Опубликовать
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    ${postsArray.length === 0 ? '<div class="no-posts"><i class="fas fa-images"></i><br/>Нет постов. Будьте первым!</div>' : ''}
+                    ${postsArray.map(post => {
+                        const isLiked = post.likes && post.likes[currentUser.localId];
+                        const likesCount = likeCount(post.likes);
+                        const isAuthor = currentUser.localId === post.authorId;
+                        const avatarContent = getUserAvatar(post.authorId, post.authorName);
+                        return `
+                            <div class="post-card" data-post-id="${post.id}">
+                                <div class="post-header" onclick="window.location.href='profile.html?id=${post.authorName}'">
+                                    <div class="post-avatar">
+                                        ${avatarContent}
+                                    </div>
+                                    <div>
+                                        <div class="post-author">${escapeHtml(post.authorName)}</div>
+                                        <div class="post-time">${new Date(post.createdAt).toLocaleString()}</div>
+                                    </div>
+                                </div>
+                                ${post.text ? `<div class="post-text">${escapeHtml(post.text)}</div>` : ''}
+                                ${post.imageUrl ? `
+                                    <div class="post-image">
+                                        <img src="${post.imageUrl}" alt="Post image" onclick="event.stopPropagation(); window.open('${post.imageUrl}', '_blank')">
+                                    </div>
+                                ` : ''}
+${post.mediaUrl ? `
+    ${post.mediaType === 'video' ? `
+        <div class="post-video">
+            <video controls onclick="event.stopPropagation()">
+                <source src="${post.mediaUrl}" type="video/mp4">
+                Ваш браузер не поддерживает видео
+            </video>
+        </div>
+    ` : `
+        <div class="post-image">
+            <img src="${post.mediaUrl}" alt="Post image" onclick="event.stopPropagation(); window.open('${post.mediaUrl}', '_blank')">
+        </div>
+    `}
+` : ''}
+                                <div class="post-stats">
+                                    <button class="like-btn ${isLiked ? 'liked' : ''}" onclick="event.stopPropagation(); window.toggleLikeFromGlobal('${post.id}')">
+                                        <i class="fas fa-heart"></i> ${likesCount}
+                                    </button>
+                                    <button class="comment-btn" onclick="event.stopPropagation(); window.location.href = 'post.html?id=${post.id}';">
+                                        <i class="fas fa-comment"></i> ${(post.comments || []).length}
+                                    </button>
+                                    ${isAuthor ? `
+                                        <button class="delete-btn" onclick="event.stopPropagation(); window.deletePostFromGlobal('${post.id}')">
+                                            <i class="fas fa-trash-alt"></i> Удалить
+                                        </button>
+                                    ` : ''}
+                                </div>
+                                <div id="comments-${post.id}" style="display:none;" class="comments-section">
+                                    
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+        </div>
+    `;
+    
+    appDiv.innerHTML = html;
+}
+
+async function uploadToCloudinary(file) {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', cloudinaryConfig.uploadPreset);
+    
+    // Определяем тип загрузки (image или video)
+    const resourceType = file.type.startsWith('video/') ? 'video' : 'image';
+    const url = `https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/${resourceType}/upload`;
+    
+    const response = await fetch(url, {
+        method: 'POST',
+        body: formData
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error?.message || "Ошибка загрузки");
+    return data.secure_url;
+}
+window.handleFileSelect = (event, type) => {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    if (type === 'image' && !file.type.startsWith('image/')) {
+        alert("Пожалуйста, выберите изображение");
+        return;
+    }
+    if (type === 'video' && !file.type.startsWith('video/')) {
+        alert("Пожалуйста, выберите видео");
+        return;
+    }
+    
+    selectedMediaFile = file;
+    selectedMediaType = type;
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        currentMediaPreview = e.target.result;
+        loadDataAndRender();
+    };
+    reader.readAsDataURL(file);
+};
+window.removeSelectedMedia = () => {
+    selectedMediaFile = null;
+    currentMediaPreview = null;
+    selectedMediaType = null;
+    loadDataAndRender();
+};
+    window.switchView = (view) => {
+        currentView = view;
+        loadDataAndRender();
+    };
+    
+    window.handleImageSelect = (event) => {
+        const file = event.target.files[0];
+        if (file && file.type.startsWith('image/')) {
+            selectedImageFile = file;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                currentImagePreview = e.target.result;
+                loadDataAndRender();
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+    
+    window.removeSelectedImage = () => {
+        selectedImageFile = null;
+        currentImagePreview = null;
+        loadDataAndRender();
+    };
+    
+window.submitNewPost = async () => {
+    const textarea = document.getElementById('postTextarea');
+    const text = textarea?.value || '';
+    
+    let mediaUrl = null;
+    let mediaType = null;
+    
+    if (selectedMediaFile) {
+        try {
+            mediaUrl = await uploadToCloudinary(selectedMediaFile);
+            mediaType = selectedMediaType;
+        } catch (err) {
+            alert("Ошибка загрузки: " + err.message);
+            return;
+        }
+    }
+    
+    await createPost(text, mediaUrl, mediaType);
+    selectedMediaFile = null;
+    currentMediaPreview = null;
+    selectedMediaType = null;
+    await loadDataAndRender();
+};
+    
+    window.toggleLikeFromGlobal = async (postId) => {
+        const post = posts[postId];
+        if (post) await toggleLike(postId, post);
+    };
+    
+    window.addCommentFromGlobal = async (postId) => {
+        const input = document.getElementById(`comment-input-${postId}`);
+        const commentText = input?.value || '';
+        const post = posts[postId];
+        if (post && commentText) {
+            await addComment(postId, post, commentText);
+            input.value = '';
+        }
+    };
+    
+    window.deletePostFromGlobal = async (postId) => {
+        const post = posts[postId];
+        if (post) await deletePost(postId, post);
+    };
+    
+    window.toggleComments = (postId) => {
+        const commentsDiv = document.getElementById(`comments-${postId}`);
+        if (commentsDiv) {
+            commentsDiv.style.display = commentsDiv.style.display === 'none' ? 'block' : 'none';
+        }
+    };
+    
+    window.logout = () => {
+        currentUser = null;
+        localStorage.removeItem('volgura_user');
+        sessionStorage.removeItem('volgura_user');
+        window.location.href = 'login.html';
+    };
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    function checkAuth() {
+        const savedUser = localStorage.getItem('volgura_user') || sessionStorage.getItem('volgura_user');
+        if (savedUser) {
+            try {
+                currentUser = JSON.parse(savedUser);
+                loadDataAndRender();
+            } catch(e) {
+                window.location.href = 'login.html';
+            }
+        } else {
+            window.location.href = 'login.html';
+        }
+		if(currentUser.displayName == "DELETED")
+        {
+		    window.location.href = "set.html";
+        }
+    }
+    
+    checkAuth();
+</script>
+</body>
+</html>

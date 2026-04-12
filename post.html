@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+    <title>Пост | Волгра</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #1a1a1a;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            min-height: 100vh;
+            width: 100%;
+            background: #2d2d2d;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: #3b3b3b7a;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .logo img {
+            width: 40px;
+        }
+        .nav-icons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        .nav-btn {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: white;
+            transition: 0.2s;
+            padding: 8px;
+            border-radius: 12px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.25);
+        }
+        .back-btn {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Карточка поста */
+        .post-card {
+            background: #252525;
+            border-radius: 20px;
+            padding: 24px;
+            transition: 0.2s;
+        }
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+        .post-avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        .post-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .post-author {
+            font-weight: 700;
+            font-size: 1rem;
+            color: #ff7a7a;
+        }
+        .post-time {
+            font-size: 0.7rem;
+            color: #adb5bd;
+            margin-top: 4px;
+        }
+        .post-text {
+            margin: 16px 0;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: white;
+        }
+        .post-image {
+            margin: 16px 0;
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .post-image img {
+            width: 100%;
+            max-height: 500px;
+            object-fit: cover;
+            border-radius: 16px;
+        }
+        .post-video {
+            margin: 16px 0;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        .post-video video {
+            width: 100%;
+            max-height: 500px;
+            border-radius: 16px;
+            outline: none;
+        }
+        .post-stats {
+            display: flex;
+            gap: 24px;
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #3a3a3a;
+        }
+        .like-btn, .comment-btn, .delete-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #adb5bd;
+            transition: 0.2s;
+            padding: 8px 16px;
+            border-radius: 40px;
+        }
+        .like-btn.liked {
+            color: #dc2626;
+        }
+        .like-btn:hover, .comment-btn:hover { 
+            background: #3a3a3a; 
+        }
+        .delete-btn:hover { 
+            background: #3a1a1a; 
+            color: #dc2626; 
+        }
+
+        /* Комментарии */
+        .comments-section {
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid #3a3a3a;
+        }
+        .comments-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 16px;
+        }
+        .comment {
+            padding: 12px 0;
+            font-size: 0.9rem;
+            color: #ced4da;
+            border-bottom: 1px solid #3a3a3a;
+        }
+        .comment strong { 
+            color: #ff7a7a; 
+        }
+        .add-comment {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        .add-comment input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid #3a3a3a;
+            background: #1a1a1a;
+            color: white;
+            border-radius: 40px;
+            font-size: 0.9rem;
+        }
+        .add-comment input:focus {
+            outline: none;
+            border-color: #dc2626;
+        }
+        .add-comment button {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .add-comment button:hover {
+            background: #b91c1c;
+        }
+
+        .no-post {
+            text-align: center;
+            padding: 60px 20px;
+            color: #adb5bd;
+        }
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: #dc2626;
+        }
+
+        @media (max-width: 600px) {
+            .main-content {
+                padding: 12px;
+            }
+            .post-card {
+                padding: 16px;
+            }
+            .post-avatar {
+                width: 44px;
+                height: 44px;
+            }
+            .like-btn, .comment-btn, .delete-btn {
+                padding: 6px 12px;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+    const firebaseConfig = {
+  apiKey: "AIzaSyBX0fnvfVbsfTiuksc2JtebtmaltgAS87U",
+  authDomain: "krastakt.firebaseapp.com",
+  databaseURL: "https://krastakt-default-rtdb.firebaseio.com",
+  projectId: "krastakt",
+  storageBucket: "krastakt.firebasestorage.app",
+  messagingSenderId: "53885771537",
+  appId: "1:53885771537:web:d293118c77625af7c136b0"
+};
+    
+    const cloudinaryConfig = {
+        cloudName: "dbjexsgbh",
+        uploadPreset: "viagal"  
+    };
+    
+    let currentUser = null;
+    let currentPost = null;
+    let postId = null;
+    let users = {};
+    
+    const appDiv = document.getElementById('app');
+    
+    function getPostIdFromUrl() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get('id');
+    }
+    
+    function getRTDBUrl(path) {
+        return `https://krastakt-default-rtdb.firebaseio.com/${path}.json`;
+    }
+    
+    async function fetchUsers() {
+        const url = getRTDBUrl('users');
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("Ошибка загрузки пользователей");
+        const data = await response.json();
+        return data || {};
+    }
+    
+    async function fetchPost(postId) {
+        const url = getRTDBUrl(`posts/${postId}`);
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("Ошибка загрузки поста");
+        const data = await response.json();
+        return data;
+    }
+    
+    async function updatePostInRTDB(postId, updates) {
+        if (!currentUser) throw new Error("Не авторизован");
+        const url = getRTDBUrl(`posts/${postId}`) + `?auth=${currentUser.idToken}`;
+        const response = await fetch(url, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updates)
+        });
+        if (!response.ok) throw new Error("Ошибка обновления");
+        return await response.json();
+    }
+    
+    async function toggleLike() {
+        if (!currentUser) {
+            alert("Войдите в аккаунт, чтобы поставить лайк");
+            window.location.href = 'login.html';
+            return;
+        }
+        
+        const userId = currentUser.localId;
+        const likes = currentPost.likes || {};
+        
+        if (likes[userId]) {
+            delete likes[userId];
+        } else {
+            likes[userId] = true;
+        }
+        
+        try {
+            await updatePostInRTDB(postId, { likes: likes });
+            await loadPost();
+        } catch (err) {
+            alert("Ошибка: " + err.message);
+        }
+    }
+    
+    async function addComment() {
+        if (!currentUser) {
+            alert("Войдите в аккаунт, чтобы оставить комментарий");
+            window.location.href = 'login.html';
+            return;
+        }
+        
+        const input = document.getElementById('commentInput');
+        const commentText = input?.value.trim();
+        
+        if (!commentText) return;
+        
+        const comments = currentPost.comments || [];
+        const newComment = {
+            id: Date.now().toString(),
+            text: commentText,
+            authorName: currentUser.displayName || currentUser.email.split('@')[0],
+            authorId: currentUser.localId,
+            createdAt: Date.now()
+        };
+        comments.push(newComment);
+        
+        try {
+            await updatePostInRTDB(postId, { comments: comments });
+            input.value = '';
+            await loadPost();
+        } catch (err) {
+            alert("Ошибка: " + err.message);
+        }
+    }
+    
+    async function deletePost() {
+        if (!currentUser) {
+            alert("Войдите в аккаунт");
+            window.location.href = 'login.html';
+            return;
+        }
+        
+        if (currentUser.localId !== currentPost.authorId) {
+            alert("Вы можете удалять только свои посты!");
+            return;
+        }
+        
+        if (confirm("Удалить пост?")) {
+            try {
+                const url = getRTDBUrl(`posts/${postId}`) + `?auth=${currentUser.idToken}`;
+                await fetch(url, { method: 'DELETE' });
+                window.location.href = 'feed.html';
+            } catch (err) {
+                alert("Ошибка: " + err.message);
+            }
+        }
+    }
+    
+    async function loadPost() {
+        postId = getPostIdFromUrl();
+        
+        if (!postId) {
+            renderError("Пост не найден");
+            return;
+        }
+        
+        try {
+            const [postData, usersData] = await Promise.all([
+                fetchPost(postId),
+                fetchUsers()
+            ]);
+            
+            if (!postData) {
+                renderError("Пост не существует или был удален");
+                return;
+            }
+            
+            currentPost = postData;
+            users = usersData;
+            renderPost();
+        } catch (err) {
+            console.error(err);
+            renderError("Ошибка загрузки поста");
+        }
+    }
+    
+    function renderPost() {
+        if (!currentPost) return;
+        
+        const likeCount = Object.keys(currentPost.likes || {}).length;
+        const isLiked = currentUser && currentPost.likes && currentPost.likes[currentUser.localId];
+        const isAuthor = currentUser && currentUser.localId === currentPost.authorId;
+        
+        const getUserAvatar = (authorId, authorName) => {
+            const user = users[authorId];
+            if (user && user.avatar) {
+                return `<img src="${user.avatar}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+            }
+            return `<img src="https://res.cloudinary.com/dbjexsgbh/image/upload/v1773612258/viagramka/y0s1kcfy7ga3hn6lshqm.png" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+        };
+        
+        const avatarContent = getUserAvatar(currentPost.authorId, currentPost.authorName);
+        
+        const html = `
+            <div class="app-container">
+                
+                <div class="main-content">
+                    <div class="post-card">
+                        <div class="post-header" onclick="window.location.href='profile.html?id=${currentPost.authorName}'">
+                            <div class="post-avatar">
+                                ${avatarContent}
+                            </div>
+                            <div>
+                                <div class="post-author">${escapeHtml(currentPost.authorName)}</div>
+                                <div class="post-time">${new Date(currentPost.createdAt).toLocaleString()}</div>
+                            </div>
+                        </div>
+                        
+                        ${currentPost.text ? `<div class="post-text">${escapeHtml(currentPost.text)}</div>` : ''}
+                        
+                        ${currentPost.mediaUrl ? `
+                            ${currentPost.mediaType === 'video' ? `
+                                <div class="post-video">
+                                    <video controls>
+                                        <source src="${currentPost.mediaUrl}" type="video/mp4">
+                                        Ваш браузер не поддерживает видео
+                                    </video>
+                                </div>
+                            ` : `
+                                <div class="post-image">
+                                    <img src="${currentPost.mediaUrl}" alt="Post image" onclick="window.open('${currentPost.mediaUrl}', '_blank')">
+                                </div>
+                            `}
+                        ` : ''}
+                        
+                        <div class="post-stats">
+                            <button class="like-btn ${isLiked ? 'liked' : ''}" onclick="window.toggleLike()">
+                                <i class="fas fa-heart"></i> ${likeCount}
+                            </button>
+                            <button class="comment-btn" onclick="document.getElementById('commentInput').focus()">
+                                <i class="fas fa-comment"></i> ${(currentPost.comments || []).length}
+                            </button>
+                            ${isAuthor ? `
+                                <button class="delete-btn" onclick="window.deletePost()">
+                                    <i class="fas fa-trash-alt"></i> Удалить
+                                </button>
+                            ` : ''}
+                        </div>
+                        
+                        <div class="comments-section">
+                            <div class="comments-title">
+                                <i class="fas fa-comments"></i> Комментарии (${(currentPost.comments || []).length})
+                            </div>
+                            <div class="comments-list">
+                                ${(currentPost.comments || []).length === 0 ? 
+                                    '<div style="text-align:center;padding:20px;color:#6c757d;">Нет комментариев. Будьте первым!</div>' :
+                                    (currentPost.comments || []).map(comment => `
+                                        <div class="comment">
+                                            <strong>${escapeHtml(comment.authorName)}</strong>
+                                            <span style="font-size:0.7rem;color:#6c757d;margin-left:8px;">${new Date(comment.createdAt).toLocaleString()}</span>
+                                            <div style="margin-top:4px;">${escapeHtml(comment.text)}</div>
+                                        </div>
+                                    `).join('')
+                                }
+                            </div>
+                            <div class="add-comment">
+                                <input type="text" id="commentInput" placeholder="Написать комментарий...">
+                                <button onclick="window.addComment()">Отправить</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        appDiv.innerHTML = html;
+    }
+    
+    function renderError(message) {
+        appDiv.innerHTML = `
+            <div class="app-container">
+                
+                <div class="main-content">
+                    <div class="no-post">
+                        <i class="fas fa-exclamation-triangle" style="font-size:3rem;"></i>
+                        <p style="margin-top:16px;">${message}</p>
+                        <button class="back-btn" onclick="window.location.href='feed.html'" style="margin-top:20px;">
+                            <i class="fas fa-arrow-left"></i> Вернуться в ленту
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    window.toggleLike = toggleLike;
+    window.addComment = addComment;
+    window.deletePost = deletePost;
+    
+    window.logout = () => {
+        localStorage.removeItem('volgura_user');
+        sessionStorage.removeItem('volgura_user');
+        window.location.href = 'login.html';
+    };
+    
+    function checkAuth() {
+        const savedUser = localStorage.getItem('volgura_user') || sessionStorage.getItem('volgura_user');
+        if (savedUser) {
+            try {
+                currentUser = JSON.parse(savedUser);
+                loadPost();
+            } catch(e) {
+                currentUser = null;
+                loadPost();
+            }
+        } else {
+            currentUser = null;
+            loadPost();
+        }
+    }
+    
+    checkAuth();
+</script>
+</body>
+</html>

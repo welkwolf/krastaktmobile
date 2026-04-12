@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+    <title>Редактирование профиля | Волгра</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Arimo', sans-serif;
+            background: #2d2d2d;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .edit-container {
+            max-width: 500px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* Модальное окно (отображается как основная карточка) */
+        .edit-card {
+            background: #333333;
+            border-radius: 28px;
+            padding: 32px 28px;
+            animation: fadeInUp 0.3s ease-out;
+            border: 1px solid #444;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+        }
+        .modal-header h2 {
+            font-size: 1.6rem;
+            color: #ff7373;
+            font-weight: 700;
+        }
+        .close-btn {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            font-size: 1.3rem;
+            cursor: pointer;
+            color: #adb5bd;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+        .close-btn:hover {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        /* Аватар */
+        .avatar-section {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 0 auto 12px;
+            position: relative;
+            cursor: pointer;
+            transition: 0.2s;
+            overflow: hidden;
+        }
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .profile-avatar:hover .avatar-overlay {
+            opacity: 1;
+        }
+        .avatar-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: 0.2s;
+            color: white;
+            font-size: 1.2rem;
+        }
+        .avatar-hint {
+            font-size: 0.7rem;
+            color: #6c757d;
+            margin-top: 8px;
+        }
+
+        /* Форма */
+        .form-group {
+            margin-bottom: 24px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #e9ecef;
+            font-size: 0.9rem;
+        }
+        .input-wrapper {
+            position: relative;
+        }
+        .input-wrapper i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #dc2626;
+            font-size: 1rem;
+        }
+        .input-wrapper input, .input-wrapper textarea {
+    width: 100%;
+    padding: 14px 16px 16px 10px;
+    border: 2px solid #3a3a3a;
+    background: #1a1a1a;
+    color: white;
+    border-radius: 16px;
+    font-size: 1rem;
+    transition: all 0.2s;
+    font-family: 'Arimo', sans-serif;
+}
+        .input-wrapper textarea {
+            padding: 14px 16px;
+            resize: vertical;
+            min-height: 100px;
+        }
+        .input-wrapper input:focus, .input-wrapper textarea:focus {
+            outline: none;
+            border-color: #dc2626;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.2);
+        }
+        .input-wrapper input::placeholder, .input-wrapper textarea::placeholder {
+            color: #6c757d;
+        }
+        .modal-save-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: transform 0.2s;
+        }
+        .modal-save-btn:hover {
+            transform: translateY(-2px);
+        }
+        .modal-save-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .cancel-btn {
+            width: 100%;
+            background: transparent;
+            border: 1px solid #3a3a3a;
+            color: #adb5bd;
+            padding: 14px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 12px;
+            transition: 0.2s;
+        }
+        .cancel-btn:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: #dc2626;
+            color: #dc2626;
+        }
+
+        /* Сообщения */
+        .message-container {
+            margin-top: 16px;
+        }
+        .error-message, .success-message {
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .error-message {
+            background: rgba(220, 38, 38, 0.2);
+            color: #f87171;
+            border: 1px solid rgba(220, 38, 38, 0.3);
+        }
+        .success-message {
+            background: rgba(34, 197, 94, 0.2);
+            color: #4ade80;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Инфо-бокс */
+        .info-box {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 24px;
+            font-size: 0.85rem;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        hr {
+            border-color: #3a3a3a;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 480px) {
+            .edit-card {
+                padding: 24px 20px;
+            }
+            .profile-avatar {
+                width: 80px;
+                height: 80px;
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="edit-container">
+        <div class="edit-card">
+            <div class="modal-header">
+                <h2>Настройка профиля</h2>
+                
+            </div>
+
+            <div class="avatar-section">
+                <div class="profile-avatar" id="avatarBtn">
+                    <span id="avatarText">?</span>
+                    <div class="avatar-overlay">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                </div>
+                <input type="file" id="avatarInput" style="display:none" accept="image/*">
+                <div class="avatar-hint">Нажмите на аватар, чтобы изменить фото</div>
+            </div>
+
+            
+
+            <div class="form-group">
+                <label>Никнейм(выбирается только один раз!)</label>
+                <div class="input-wrapper">
+                    <input type="text" id="editDisplayName" placeholder="Ваше имя">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Описание</label>
+                <div class="input-wrapper">
+                    <textarea id="editBio" placeholder="Расскажите о себе..."></textarea>
+                </div>
+            </div>
+
+            <button class="modal-save-btn" id="saveBtn">
+                <i class="fas fa-save"></i> Сохранить изменения
+            </button>
+           
+
+            <div id="messageContainer" class="message-container"></div>
+        </div>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+  apiKey: "AIzaSyBX0fnvfVbsfTiuksc2JtebtmaltgAS87U",
+  authDomain: "krastakt.firebaseapp.com",
+  databaseURL: "https://krastakt-default-rtdb.firebaseio.com",
+  projectId: "krastakt",
+  storageBucket: "krastakt.firebasestorage.app",
+  messagingSenderId: "53885771537",
+  appId: "1:53885771537:web:d293118c77625af7c136b0"
+};
+
+        const cloudinaryConfig = {
+            cloudName: "dbjexsgbh",
+            uploadPreset: "viagal"  
+        };
+
+        let currentUser = null;
+        let userData = null;
+
+        function getRTDBUrl(path) {
+            return `https://krastakt-default-rtdb.firebaseio.com/${path}.json`;
+        }
+
+        async function fetchUserData(userId, idToken) {
+            const url = getRTDBUrl(`users/${userId}`) + `?auth=${idToken}`;
+            const response = await fetch(url);
+            if (!response.ok) throw new Error("Ошибка загрузки данных");
+            const data = await response.json();
+            return data;
+        }
+
+        async function updateUser(userId, userData, idToken) {
+            const url = getRTDBUrl(`users/${userId}`) + `?auth=${idToken}`;
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(userData)
+            });
+            if (!response.ok) throw new Error("Ошибка обновления");
+            return await response.json();
+        }
+
+        async function uploadAvatar(file) {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', cloudinaryConfig.uploadPreset);
+            
+            const url = `https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/image/upload`;
+            const response = await fetch(url, {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error?.message || "Ошибка загрузки");
+            return data.secure_url;
+        }
+
+        async function updatePostAvatar(postId, avatarUrl, idToken) {
+            const url = getRTDBUrl(`posts/${postId}/authorAvatar`) + `?auth=${idToken}`;
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(avatarUrl)
+            });
+            return response.ok;
+        }
+
+        async function fetchAllPosts(idToken) {
+            const url = getRTDBUrl('posts') + `?auth=${idToken}`;
+            const response = await fetch(url);
+            if (!response.ok) throw new Error("Ошибка загрузки постов");
+            const data = await response.json();
+            return data || {};
+        }
+
+        // ==================== ЗАГРУЗКА ДАННЫХ ====================
+        async function loadData() {
+            const savedUser = localStorage.getItem('volgura_user') || sessionStorage.getItem('volgura_user');
+            if (!savedUser) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                currentUser = JSON.parse(savedUser);
+                
+                const userDbData = await fetchUserData(currentUser.localId, currentUser.idToken);
+                
+                userData = {
+                    id: currentUser.localId,
+                    ...userDbData,
+                    displayName: userDbData?.displayName || currentUser.email.split('@')[0],
+                    username: userDbData?.username || currentUser.email.split('@')[0],
+                    email: currentUser.email,
+                    bio: userDbData?.bio || 'no bio',
+                    avatar: userDbData?.avatar || null,
+                    followers: userDbData?.followers || {},
+                    following: userDbData?.following || {}
+                };
+
+                document.getElementById('editDisplayName').value = getRandomUsername();
+                document.getElementById('editBio').value = 'no bio';
+                
+                updateAvatarDisplay();
+                
+            } catch (err) {
+                console.error(err);
+                showMessage('error', 'Ошибка загрузки данных: ' + err.message);
+            }
+        }
+
+        function updateAvatarDisplay() {
+            const avatarDiv = document.getElementById('avatarText');
+            if (userData.avatar) {
+                avatarDiv.innerHTML = `<img src="${userData.avatar}" style="width:100%;height:100%;object-fit:cover;">`;
+            } else {
+                avatarDiv.innerHTML = (userData.displayName?.charAt(0) || '?').toUpperCase();
+            }
+        }
+        function getRandomUsername() {
+    const adjectives = ['быстрый', 'смелый', 'умный', 'веселый', 'добрый', 'крутой', 'милый', 'rock', 'cool', 'super'];
+    const nouns = ['тигр', 'волк', 'лиса', 'панда', 'дракон', 'робот', 'звезда', 'tiger', 'wolf', 'dragon'];
+    const numbers = Math.floor(Math.random() * 1000);
+    
+    const adj = adjectives[Math.floor(Math.random() * adjectives.length)];
+    const noun = nouns[Math.floor(Math.random() * nouns.length)];
+    
+    return adj + '_' + noun + numbers;
+}
+        async function saveChanges() {
+            const newDisplayName = document.getElementById('editDisplayName').value.trim();
+            const newBio = document.getElementById('editBio').value.trim();
+
+            if (!newDisplayName) {
+                showMessage('error', 'Имя пользователя не может быть пустым');
+                return;
+            }
+
+            const saveBtn = document.getElementById('saveBtn');
+            const originalHtml = saveBtn.innerHTML;
+            saveBtn.innerHTML = '<div class="spinner"></div> Сохранение...';
+            saveBtn.disabled = true;
+
+            try {
+                const updatedUser = {
+                    ...userData,
+                    displayName: newDisplayName,
+                    username: newDisplayName,
+                    bio: newBio || 'no bio'
+                };
+                delete updatedUser.id;
+                delete updatedUser.isOwnProfile;
+
+                await updateUser(currentUser.localId, updatedUser, currentUser.idToken);
+
+                userData.displayName = newDisplayName;
+                userData.username = newDisplayName;
+                userData.bio = newBio;
+
+                currentUser.displayName = newDisplayName;
+                const savedUser = JSON.parse(localStorage.getItem('volgura_user') || sessionStorage.getItem('volgura_user'));
+                savedUser.displayName = newDisplayName;
+                if (localStorage.getItem('volgura_user')) {
+                    localStorage.setItem('volgura_user', JSON.stringify(savedUser));
+                } else {
+                    sessionStorage.setItem('volgura_user', JSON.stringify(savedUser));
+                }
+
+                showMessage('success', 'Профиль успешно обновлён!');
+                
+                setTimeout(() => {
+                    window.location.href = 'profile.html?id=' + encodeURIComponent(newDisplayName);
+                }, 1500);
+                
+            } catch (err) {
+                showMessage('error', 'Ошибка сохранения: ' + err.message);
+            } finally {
+                saveBtn.innerHTML = originalHtml;
+                saveBtn.disabled = false;
+            }
+        }
+
+        async function changeAvatar(file) {
+            if (!file) return;
+            
+            if (!file.type.startsWith('image/')) {
+                showMessage('error', 'Пожалуйста, выберите изображение');
+                return;
+            }
+
+            const saveBtn = document.getElementById('saveBtn');
+            const originalHtml = saveBtn.innerHTML;
+            saveBtn.innerHTML = '<div class="spinner"></div> Загрузка аватара...';
+            saveBtn.disabled = true;
+
+            try {
+                const avatarUrl = await uploadAvatar(file);
+                
+                const updatedUser = { ...userData, avatar: avatarUrl };
+                delete updatedUser.id;
+                delete updatedUser.isOwnProfile;
+                
+                await updateUser(currentUser.localId, updatedUser, currentUser.idToken);
+                userData.avatar = avatarUrl;
+                
+                // Обновляем аватар во всех постах пользователя
+                const allPosts = await fetchAllPosts(currentUser.idToken);
+                for (const [postId, post] of Object.entries(allPosts)) {
+                    if (post.authorId === currentUser.localId) {
+                        await updatePostAvatar(postId, avatarUrl, currentUser.idToken);
+                    }
+                }
+                
+                updateAvatarDisplay();
+                showMessage('success', 'Аватар успешно обновлён!');
+                
+            } catch (err) {
+                showMessage('error', 'Ошибка загрузки аватара: ' + err.message);
+            } finally {
+                saveBtn.innerHTML = originalHtml;
+                saveBtn.disabled = false;
+            }
+        }
+
+        function showMessage(type, text) {
+            const container = document.getElementById('messageContainer');
+            const icons = {
+                error: 'fa-exclamation-triangle',
+                success: 'fa-check-circle'
+            };
+            
+            container.innerHTML = `
+                <div class="${type}-message">
+                    <i class="fas ${icons[type]}"></i>
+                    <span>${text}</span>
+                </div>
+            `;
+            
+            setTimeout(() => {
+                if (container.innerHTML) {
+                    container.innerHTML = '';
+                }
+            }, 4000);
+        }
+
+        document.getElementById('saveBtn').addEventListener('click', saveChanges);
+        
+        document.getElementById('avatarBtn').addEventListener('click', () => {
+            document.getElementById('avatarInput').click();
+        });
+        
+        document.getElementById('avatarInput').addEventListener('change', (e) => {
+            if (e.target.files[0]) {
+                changeAvatar(e.target.files[0]);
+            }
+        });
+
+        document.getElementById('editDisplayName').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                saveChanges();
+            }
+        });
+
+        loadData();
+    </script>
+</body>
+</html>

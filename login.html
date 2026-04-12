@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+    <title>Крастакт</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #2d2d2d;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .login-page {
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+        .login-card {
+    background: #252525;
+    border-radius: 32px;
+    padding: 40px 32px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    animation: fadeInUp 0.5s ease-out;
+}
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .logo-icon {
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+        }
+        .logo-icon i {
+            font-size: 2.5rem;
+            color: white;
+        }
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .logo p {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-top: 8px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: white;
+            font-size: 0.9rem;
+        }
+        .input-wrapper {
+            position: relative;
+        }
+        .input-wrapper i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #dc2626;
+            font-size: 1rem;
+        }
+        .input-wrapper input {
+    width: 100%;
+    padding: 14px 16px 14px 10px;
+    border: 2px solid #3a3a3a;
+    background: #1a1a1a;
+    color: white;
+    border-radius: 16px;
+    font-size: 1rem;
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+}
+        .input-wrapper input:focus {
+            outline: none;
+            border-color: #dc2626;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        }
+        .input-wrapper input.error {
+            border-color: #dc3545;
+        }
+
+        .btn-login {
+            width: 100%;
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 38, 38, 0.3);
+        }
+        .btn-login:active {
+            transform: translateY(0);
+        }
+        .btn-login:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Ссылки */
+        .links {
+            margin-top: 24px;
+            text-align: center;
+        }
+        .links a {
+            color: #dc2626;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+        .links a:hover {
+            text-decoration: underline;
+        }
+        .register-link {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #e9ecef;
+        }
+        .register-link span {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        /* Сообщения */
+        .error-message {
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            margin-top: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .success-message {
+            background: #d1fae5;
+            color: #059669;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            margin-top: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .info-message {
+            background: #e0e7ff;
+            color: #4f46e5;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            margin-top: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-group {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            margin: 16px 0;
+        }
+        .checkbox-group input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        .checkbox-group label {
+            margin: 0;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #495057;
+        }
+
+        /* Анимация загрузки */
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Мобильная адаптация */
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 32px 24px;
+            }
+            .logo-icon {
+                width: 60px;
+                height: 60px;
+            }
+            .logo-icon i {
+                font-size: 2rem;
+            }
+            .logo h1 {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Демо-аккаунт */
+        .demo-account {
+            background: #fef2f2;
+            border-radius: 16px;
+            padding: 16px;
+            margin-top: 24px;
+        }
+        .demo-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #dc2626;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .demo-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .demo-info code {
+            background: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            color: #dc2626;
+        }
+        .demo-fill-btn {
+            background: white;
+            border: 1px solid #dc2626;
+            color: #dc2626;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .demo-fill-btn:hover {
+            background: #dc2626;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-page">
+        <div class="login-card">
+            <div class="logo">
+                <div class="logo-icon">
+				     <img src="icon.png" style="width: 80px;">
+                </div>
+                <h1>Крастакт</h1>
+                <p>Войдите в свой аккаунт!</p>
+            </div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <div class="input-wrapper">
+                        
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            placeholder="example@mail.com"
+                            autocomplete="email"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Пароль</label>
+                    <div class="input-wrapper">
+                       
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            placeholder="Введите пароль"
+                            autocomplete="current-password"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="rememberMe">
+                    <label for="rememberMe">Запомнить меня</label>
+                </div>
+
+                <button type="submit" class="btn-login" id="loginBtn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Войти</span>
+                </button>
+            </form>
+
+            <div id="messageContainer"></div>
+
+            <div class="links">
+                <a href="#" style="display: none;" id="forgotPasswordLink">Забыли пароль?</a>
+                <div class="register-link">
+                    <span>Нет аккаунта?</span>
+                    <a href="register.html"> Зарегистрироваться</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+  apiKey: "AIzaSyBX0fnvfVbsfTiuksc2JtebtmaltgAS87U",
+  authDomain: "krastakt.firebaseapp.com",
+  databaseURL: "https://krastakt-default-rtdb.firebaseio.com",
+  projectId: "krastakt",
+  storageBucket: "krastakt.firebasestorage.app",
+  messagingSenderId: "53885771537",
+  appId: "1:53885771537:web:d293118c77625af7c136b0"
+};
+
+        let isLoading = false;
+
+        function showMessage(type, text) {
+            const container = document.getElementById('messageContainer');
+            const icons = {
+                error: 'fa-exclamation-triangle',
+                success: 'fa-check-circle',
+                info: 'fa-info-circle'
+            };
+            
+            container.innerHTML = `
+                <div class="${type}-message">
+                    <i class="fas ${icons[type]}"></i>
+                    <span>${text}</span>
+                </div>
+            `;
+            
+            setTimeout(() => {
+                if (container.innerHTML) {
+                    container.innerHTML = '';
+                }
+            }, 5000);
+        }
+
+        function clearMessages() {
+            const container = document.getElementById('messageContainer');
+            container.innerHTML = '';
+        }
+
+        async function signIn(email, password) {
+            const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${firebaseConfig.apiKey}`;
+            
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    email, 
+                    password, 
+                    returnSecureToken: true 
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (!response.ok) {
+                let errorMessage = "Ошибка входа";
+                switch (data.error?.message) {
+                    case 'EMAIL_NOT_FOUND':
+                        errorMessage = "Пользователь с таким email не найден";
+                        break;
+                    case 'INVALID_PASSWORD':
+                        errorMessage = "Неверный пароль";
+                        break;
+                    case 'USER_DISABLED':
+                        errorMessage = "Аккаунт заблокирован";
+                        break;
+                    default:
+                        errorMessage = data.error?.message || "Ошибка входа";
+                }
+                throw new Error(errorMessage);
+            }
+            
+            try {
+                const userUrl = `https://${firebaseConfig.projectId}-default-rtdb.firebaseio.com/users/${data.localId}.json?auth=${data.idToken}`;
+                const userResponse = await fetch(userUrl);
+                const userData = await userResponse.json();
+                
+                return {
+                    localId: data.localId,
+                    idToken: data.idToken,
+                    email: data.email,
+                    refreshToken: data.refreshToken,
+                    expiresIn: data.expiresIn,
+                    displayName: userData?.displayName || email.split('@')[0],
+                    username: userData?.username || email.split('@')[0],
+                    bio: userData?.bio || ''
+                };
+            } catch (err) {
+                return {
+                    localId: data.localId,
+                    idToken: data.idToken,
+                    email: data.email,
+                    refreshToken: data.refreshToken,
+                    expiresIn: data.expiresIn,
+                    displayName: email.split('@')[0],
+                    username: email.split('@')[0],
+                    bio: ''
+                };
+            }
+        }
+
+        async function resetPassword(email) {
+            const url = `https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${firebaseConfig.apiKey}`;
+            
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    requestType: 'PASSWORD_RESET',
+                    email: email
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(data.error?.message || "Ошибка отправки письма");
+            }
+            
+            return true;
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            
+            if (isLoading) return;
+            
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+            
+            if (!email) {
+                showMessage('error', 'Введите email');
+                document.getElementById('email').focus();
+                return;
+            }
+            
+            if (!password) {
+                showMessage('error', 'Введите пароль');
+                document.getElementById('password').focus();
+                return;
+            }
+            
+            if (password.length < 6) {
+                showMessage('error', 'Пароль должен содержать минимум 6 символов');
+                return;
+            }
+            
+            isLoading = true;
+            const loginBtn = document.getElementById('loginBtn');
+            const originalText = loginBtn.innerHTML;
+            loginBtn.innerHTML = '<div class="spinner"></div><span>Вход...</span>';
+            loginBtn.disabled = true;
+            
+            clearMessages();
+            
+            try {
+                const userData = await signIn(email, password);
+                
+                const userToStore = {
+                    localId: userData.localId,
+                    idToken: userData.idToken,
+                    email: userData.email,
+                    displayName: userData.displayName,
+                    username: userData.username,
+                    refreshToken: userData.refreshToken
+                };
+                
+                if (rememberMe) {
+                    localStorage.setItem('volgura_user', JSON.stringify(userToStore));
+                    sessionStorage.removeItem('volgura_user');
+                } else {
+                    sessionStorage.setItem('volgura_user', JSON.stringify(userToStore));
+                    localStorage.removeItem('volgura_user');
+                }
+                
+                showMessage('success', 'Вход выполнен успешно! Перенаправление...');
+                
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+                
+            } catch (error) {
+                console.error('Login error:', error);
+                showMessage('error', error.message);
+            } finally {
+                isLoading = false;
+                loginBtn.innerHTML = originalText;
+                loginBtn.disabled = false;
+            }
+        }
+
+       
+
+        
+
+        function checkExistingSession() {
+            const savedUser = localStorage.getItem('volgura_user') || sessionStorage.getItem('volgura_user');
+            if (savedUser) {
+                window.location.href = 'index.html';
+            }
+        }
+
+        function init() {
+            checkExistingSession();
+            
+            const form = document.getElementById('loginForm');
+            form.addEventListener('submit', handleLogin);
+            
+            const forgotLink = document.getElementById('forgotPasswordLink');
+            forgotLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                handleForgotPassword();
+            });
+            
+ 
+ 
+            
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        handleLogin(e);
+                    }
+                });
+            });
+            
+            document.getElementById('email').focus();
+        }
+        
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
