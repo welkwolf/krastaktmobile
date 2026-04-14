@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Krastakt Mini App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #1a1a1a;
+            color: white;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .panel {
+            background: #2d2d2d;
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+       button {
+    background: #dc2626;
+    color: white;
+    border: none;
+    padding: 10px 230px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin: 5px;
+}
+        button:hover {
+            background: #b91c1c;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            background: #1a1a1a;
+            border: 1px solid #3a3a3a;
+            color: white;
+            border-radius: 8px;
+        }
+        .elements-area {
+            background: #2d2d2d;
+            padding: 20px;
+            border-radius: 16px;
+            min-height: 300px;
+        }
+        .element {
+            background: #252525;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 12px;
+            position: relative;
+        }
+        .delete-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #dc2626;
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        img {
+            max-width: 100%;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+       
+
+        <div class="elements-area" id="elementsArea">
+           
+        </div>
+    </div>
+
+    <script>
+	    const urlParams = new URLSearchParams(window.location.search);
+        const host = urlParams.get('host');
+		const id = urlParams.get('id');
+		const pass = urlParams.get('uniquePass');
+		const username = urlParams.get('username');
+
+       
+		let scriptToCode = '';
+		async function antiVirus(hoster)
+		{
+		    fetch(hoster)
+              .then(res => res.text())
+              .then(scriptToCode => {
+                  const pattern = /localStorage\.(getItem|setItem|removeItem)/;
+                  const hasLocalStorage = checkScriptForLocalStorage(scriptToCode);
+                  
+                  console.log("Приложение надо заблокировать? (проверка на использования localStorage):", hasLocalStorage);
+            });
+		}
+		 if(host != null)
+		{
+		   antiVirus(host);
+		}
+		async function checkScriptForLocalStorage(scriptContent) {
+            const patterns = [
+                /localStorage\.getItem\(/,
+                /localStorage\.setItem\(/,
+                /localStorage\.removeItem\(/,
+                /sessionStorage\.getItem\(/,
+                /sessionStorage\.setItem\(/,
+                /sessionStorage\.removeItem\(/
+            ];
+            
+            const found = [];
+            for (const pattern of patterns) {
+                if (pattern.test(scriptContent)) {
+                    found.push(pattern.toString());
+                }
+            }
+    
+            return {
+                hasLocalStorage: found.length > 0,
+                matches: found
+            };
+        }
+		async function addScript(hoster)
+		{
+		   const script = document.createElement('script');
+            script.src = hoster;
+            script.async = true; 
+            document.head.appendChild(script); 
+		}
+	    
+		
+
+        function createText(strText) {
+		     
+            const text = strText;
+            if (!text) {
+                console.log("Заспавнен не должным образом!");
+                return;
+            }
+            
+            const div = document.createElement('div');
+            div.className = 'element';
+            div.innerHTML = `
+                <div>${escapeHtml(text)}</div>
+                
+            `;
+            
+            document.getElementById('elementsArea').appendChild(div);
+            
+        }
+
+        function createButton(strText, urlStr) {
+            const text = strText;
+            if (!text) {
+                console.log("Заспавнен не должным образом!");
+                return;
+            }
+            
+            const div = document.createElement('div');
+            div.className = 'element';
+            div.innerHTML = `
+                <button onclick="window.location.href = '${urlStr}'">${escapeHtml(text)}</button>
+            `;
+            
+            document.getElementById('elementsArea').appendChild(div);
+
+        }
+
+        function createImage(urlText) {
+            const url = urlText;
+            if (!url) {
+                console.log("Заспавнен не должным образом!");
+                return;
+            }
+            
+            const div = document.createElement('div');
+            div.className = 'element';
+            div.innerHTML = `
+                <img src="${url}" onerror="this.src='https://placehold.co/400x200?text=Ошибка'">
+            `;
+            
+            document.getElementById('elementsArea').appendChild(div);
+            document.getElementById('imageUrl').value = '';
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+    </script>
+</body>
+</html>
