@@ -85,7 +85,7 @@
 		const pass = urlParams.get('uniquePass');
 		const username = urlParams.get('username');
 
-       
+        let localStorage;
 		let scriptToCode = '';
 		async function antiVirus(hoster)
 		{
@@ -94,7 +94,7 @@
               .then(scriptToCode => {
                   const pattern = /localStorage\.(getItem|setItem|removeItem)/;
                   const hasLocalStorage = checkScriptForLocalStorage(scriptToCode);
-                  
+                  localStorage = hasLocalStorage;
                   console.log("Приложение надо заблокировать? (проверка на использования localStorage):", hasLocalStorage);
                   if(hasLocalStorage === true)
 				  {
