@@ -96,9 +96,18 @@
                   const hasLocalStorage = checkScriptForLocalStorage(scriptToCode);
                   
                   console.log("Приложение надо заблокировать? (проверка на использования localStorage):", hasLocalStorage);
-            });
+                  if(hasLocalStorage === 'Promise')
+				  {
+				    addScript(host);
+				  }
+				  else 
+				  {
+				    createText('Приложение принудительно приостановлено.');
+					createText('Причина: попытка использовать localStorage. Могут украсть данные для входа в аккаунт.');
+				  }
+			});
 		}
-		 if(host != null)
+		if(host != null)
 		{
 		   antiVirus(host);
 		}
