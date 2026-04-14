@@ -85,7 +85,7 @@
 		const pass = urlParams.get('uniquePass');
 		const username = urlParams.get('username');
 
-        let localStorage;
+       
 		let scriptToCode = '';
 		async function antiVirus(hoster)
 		{
@@ -94,17 +94,16 @@
               .then(scriptToCode => {
                   const pattern = /localStorage\.(getItem|setItem|removeItem)/;
                   const hasLocalStorage = checkScriptForLocalStorage(scriptToCode);
-                  localStorage = hasLocalStorage;
+                  
+				    if (scriptToCode.includes('localStorage') || scriptToCode.includes('sessionStorage')) {
+                        createText('Приложение принудительно приостановлено.');
+					    createText('Причина: попытка использовать localStorage. Могут украсть данные для входа в аккаунт.');
+				    } else{
+					    addScript(host);
+					}
+    }
                   console.log("Приложение надо заблокировать? (проверка на использования localStorage):", hasLocalStorage);
-                  if(hasLocalStorage === true)
-				  {
-				    addScript(host);
-				  }
-				  else 
-				  {
-				    createText('Приложение принудительно приостановлено.');
-					createText('Причина: попытка использовать localStorage. Могут украсть данные для входа в аккаунт.');
-				  }
+                  
 			});
 		}
 		if(host != null)
