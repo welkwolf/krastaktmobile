@@ -96,7 +96,7 @@
                   const hasLocalStorage = checkScriptForLocalStorage(scriptToCode);
                   
                   console.log("Приложение надо заблокировать? (проверка на использования localStorage):", hasLocalStorage);
-                  if(hasLocalStorage === 'Promise')
+                  if(hasLocalStorage === false)
 				  {
 				    addScript(host);
 				  }
