@@ -192,6 +192,7 @@
         const data = await response.json();
         
         if (!response.ok) {
+		    window.location.href = "error.html";
             let errorMessage = "Ошибка входа";
             switch (data.error?.message) {
                 case 'EMAIL_NOT_FOUND':
@@ -207,7 +208,7 @@
                     errorMessage = data.error?.message || "Ошибка входа";
             }
             throw new Error(errorMessage);
-			window.location.href = "error.html";
+			
         }
         
         return {
@@ -263,6 +264,7 @@
             
         } catch (error) {
             console.error('Login error:', error);
+			window.location.href = "error.html";
             showStatus('error', 'Ошибка входа');
             showMessage('error', error.message);
         }
