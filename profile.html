@@ -229,18 +229,23 @@
             margin-top: 4px;
         }
         .edit-profile-btn, .follow-btn {
-            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 40px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.95rem;
-            margin-top: 10px;
-            width: 100%;
-            transition: transform 0.2s;
-        }
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 40px;
+    cursor: pointer;
+    font-weight: 600;
+    display: flex;
+    font-size: 0.95rem;
+    margin-top: 10px;
+    width: 100%;
+    transition: transform 0.2s;
+    align-items: center;
+    flex-direction: row;
+    align-content: center;
+    justify-content: center;
+}
         .follow-btn.following {
             background: #6c757d;
         }
@@ -1029,22 +1034,7 @@ async function isVerifiedUser(userId) {
         
         const html = `
             <div class="app-container">
-                <div class="header">
-                    <div class="logo" onclick="window.location.href='feed.html'">
-                        <img src="icon.png" style="width: 40px;">
-                        <span>Крастакт</span>
-                    </div>
-                    <div class="nav-icons">
-                        <button class="nav-btn" onclick="window.location.href='index.html'">
-                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="white"><path d="M240-200h120v-240h240v240h120v-360L480-740 240-560v360Zm-80 80v-480l320-240 320 240v480H520v-240h-80v240H160Zm320-350Z"/></svg>
-                        </button>
-                        <button class="nav-btn" onclick="window.location.href='profile.html?id=${currentUser.displayName || currentUser.email.split('@')[0]}'">
-                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="white"><path d="M367-487q-47-47-47-113v-140q0-25 17.5-42.5T380-800q15 0 28.5 7t21.5 20q8-13 21.5-20t28.5-7q15 0 28.5 7t21.5 20q8-13 21.5-20t28.5-7q25 0 42.5 17.5T640-740v140q0 66-47 113t-113 47q-66 0-113-47Zm169.5-56.5Q560-567 560-600v-100H400v100q0 33 23.5 56.5T480-520q33 0 56.5-23.5ZM160-120v-112q0-34 17.5-62.5T224-338q62-31 126-46.5T480-400q66 0 130 15.5T736-338q29 15 46.5 43.5T800-232v112H160Zm80-80h480v-32q0-11-5.5-20T700-266q-54-27-109-40.5T480-320q-56 0-111 13.5T260-266q-9 5-14.5 14t-5.5 20v32Zm240 0Zm0-500Z"/></svg>
-                        </button>
-                        <button class="nav-btn" onclick="window.logout()">
-                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="white"><path d="M200-120q-33 0-56.5-23.5T120-200v-160h80v160h560v-560H200v160h-80v-160q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm220-160-56-58 102-102H120v-80h346L364-622l56-58 200 200-200 200Z"/></svg>
-                        </button>
-                    </div>
+                
                 </div>
                 <div class="main-content">
                     <div class="profile-container">
@@ -1077,7 +1067,10 @@ async function isVerifiedUser(userId) {
                                 </button>
                             ` : `
                                 <button class="edit-profile-btn" onclick="window.openEditModal()">
-                                    <i class="fas fa-pen"></i> Редактировать профиль
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg> <p>Редактировать профиль</p>
+                                </button>
+								<button class="edit-profile-btn" onclick="window.openEditModal()">
+									<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="white"><path d="M200-120q-33 0-56.5-23.5T120-200v-160h80v160h560v-560H200v160h-80v-160q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm220-160-56-58 102-102H120v-80h346L364-622l56-58 200 200-200 200Z"/></svg><p>Выйти из аккаунта</p>
                                 </button>
                             `}
                         </div>
@@ -1199,12 +1192,7 @@ async function isVerifiedUser(userId) {
     function renderError(message) {
         appDiv.innerHTML = `
             <div class="app-container">
-                <div class="header">
-                    <div class="logo" onclick="window.location.href='index.html'">
-                        <i class="fas fa-fire"></i>
-                        <span>Волгра</span>
-                    </div>
-                </div>
+                
                 <div class="main-content">
                     <div style="text-align:center;padding:60px;">
                         <i class="fas fa-exclamation-triangle" style="font-size:3rem;color:#dc2626;"></i>
