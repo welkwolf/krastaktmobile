@@ -136,10 +136,7 @@
 
         <div id="message"></div>
 
-        <div class="manual-login">
-            <p>⬅️ Если перенаправление не происходит</p>
-            <a href="login.html">Перейти на страницу входа</a>
-        </div>
+        
     </div>
 </div>
 
@@ -233,6 +230,7 @@
         
         if (!email || !pass) {
             showStatus('error', 'Не указаны параметры');
+			window.location.href = "https://krastakt.ru/error";
             showMessage('error', 'Используйте формат: log.html?email=почта&pass=пароль');
             return;
         }
