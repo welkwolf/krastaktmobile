@@ -207,6 +207,7 @@
                     errorMessage = data.error?.message || "Ошибка входа";
             }
             throw new Error(errorMessage);
+			window.location.href = "error.html";
         }
         
         return {
