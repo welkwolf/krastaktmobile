@@ -461,7 +461,7 @@
             if (user && user.avatar) {
                 return `<img src="${user.avatar}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
             }
-            return `<img src="https://res.cloudinary.com/dbjexsgbh/image/upload/v1773612258/viagramka/y0s1kcfy7ga3hn6lshqm.png" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+            return `<img src="empty-avatar.png" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
         };
         
         const avatarContent = getUserAvatar(currentPost.authorId, currentPost.authorName);
