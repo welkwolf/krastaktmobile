@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+    <title>Поиск | Крастакт</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #1a1a1a;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            min-height: 100vh;
+            background: #1a1a1a;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: #2d2d2d;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #3a3a3a;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .nav-btn {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: white;
+            transition: 0.2s;
+            padding: 8px;
+            border-radius: 12px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-btn.active, .nav-btn:hover {
+            background: rgba(255,255,255,0.2);
+            color: #dc2626;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .search-box {
+            background: #2d2d2d;
+            border-radius: 40px;
+            padding: 12px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid #3a3a3a;
+        }
+
+        .search-box i {
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+
+        .search-box input {
+            flex: 1;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .search-box input::placeholder {
+            color: #6c757d;
+        }
+
+        .search-btn {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            border: none;
+            border-radius: 40px;
+            padding: 8px 20px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #3a3a3a;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            color: #adb5bd;
+            cursor: pointer;
+            transition: 0.2s;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .tab.active {
+            color: #dc2626;
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #dc2626;
+        }
+
+        .results-count {
+            color: #6c757d;
+            font-size: 0.85rem;
+            margin-bottom: 16px;
+        }
+
+        /* Карточка пользователя */
+        .user-card {
+            background: #2d2d2d;
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 1px solid #3a3a3a;
+        }
+
+        .user-card:hover {
+            background: #3a3a3a;
+            transform: translateX(4px);
+        }
+
+        .user-avatar {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.4rem;
+            font-weight: bold;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 700;
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .user-username {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+
+        .user-bio {
+            font-size: 0.8rem;
+            color: #adb5bd;
+            margin-top: 4px;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* Карточка поста */
+        .post-card {
+            background: #2d2d2d;
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 1px solid #3a3a3a;
+        }
+
+        .post-card:hover {
+            background: #3a3a3a;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .post-avatar {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .post-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .post-author {
+            font-weight: 700;
+            color: white;
+            font-size: 0.95rem;
+        }
+
+        .post-time {
+            font-size: 0.7rem;
+            color: #6c757d;
+            margin-top: 2px;
+        }
+
+        .post-text {
+            font-size: 0.9rem;
+            color: #adb5bd;
+            line-height: 1.4;
+            margin-bottom: 12px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .post-media {
+            margin: 12px 0;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .post-media img {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+        }
+
+        .post-media video {
+            width: 100%;
+            max-height: 300px;
+        }
+
+        .post-stats {
+            display: flex;
+            gap: 16px;
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px solid #3a3a3a;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #6c757d;
+            font-size: 0.8rem;
+        }
+
+        .stat i {
+            color: #dc2626;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #dc2626;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #3a3a3a;
+            border-top-color: #dc2626;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 600px) {
+            .main-content {
+                padding: 12px;
+            }
+            .tab {
+                padding: 10px 16px;
+                font-size: 0.9rem;
+            }
+            .user-avatar {
+                width: 48px;
+                height: 48px;
+                font-size: 1.2rem;
+            }
+            .post-avatar {
+                width: 40px;
+                height: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyBX0fnvfVbsfTiuksc2JtebtmaltgAS87U",
+        authDomain: "krastakt.firebaseapp.com",
+        databaseURL: "https://krastakt-default-rtdb.firebaseio.com",
+        projectId: "krastakt",
+        storageBucket: "krastakt.firebasestorage.app",
+        messagingSenderId: "53885771537",
+        appId: "1:53885771537:web:d293118c77625af7c136b0"
+    };
+
+    let currentUser = null;
+    let users = {};
+    let posts = {};
+    let currentTab = 'users';
+    let searchQuery = '';
+    let isLoading = false;
+
+    const appDiv = document.getElementById('app');
+
+    function getRTDBUrl(path) {
+        return `https://krastakt-default-rtdb.firebaseio.com/${path}.json`;
+    }
+
+    async function fetchWithAuth(url) {
+        const savedUser = localStorage.getItem('volgura_user') || sessionStorage.getItem('volgura_user');
+        if (!savedUser) {
+            window.location.href = 'login.html';
+            throw new Error("Не авторизован");
+        }
+        const user = JSON.parse(savedUser);
+        const authUrl = url.includes('?') ? `${url}&auth=${user.idToken}` : `${url}?auth=${user.idToken}`;
+        const response = await fetch(authUrl);
+        if (response.status === 401) {
+            localStorage.removeItem('volgura_user');
+            sessionStorage.removeItem('volgura_user');
+            window.location.href = 'login.html';
+            throw new Error("Сессия истекла");
+        }
+        return response;
+    }
+
+    async function fetchUsers() {
+        const response = await fetchWithAuth(getRTDBUrl('users'));
+        const data = await response.json();
+        return data || {};
+    }
+
+    async function fetchPosts() {
+        const response = await fetchWithAuth(getRTDBUrl('posts'));
+        const data = await response.json();
+        return data || {};
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    function formatDate(timestamp) {
+        if (!timestamp) return '';
+        const date = new Date(timestamp);
+        const now = new Date();
+        const diff = now - date;
+        
+        if (diff < 3600000) {
+            return Math.floor(diff / 60000) + ' мин назад';
+        } else if (diff < 86400000) {
+            return Math.floor(diff / 3600000) + ' ч назад';
+        } else {
+            return date.toLocaleDateString();
+        }
+    }
+
+    function searchUsers(query) {
+        const results = [];
+        const lowerQuery = query.toLowerCase();
+        
+        for (let id in users) {
+            const user = users[id];
+            const name = (user.displayName || '').toLowerCase();
+            const username = (user.username || '').toLowerCase();
+            const email = (user.email || '').toLowerCase();
+            
+            if (name.includes(lowerQuery) || username.includes(lowerQuery) || email.includes(lowerQuery)) {
+                results.push({
+                    id: id,
+                    ...user
+                });
+            }
+        }
+        
+        results.sort((a, b) => {
+            const aName = (a.displayName || '').toLowerCase();
+            const bName = (b.displayName || '').toLowerCase();
+            const queryLower = query.toLowerCase();
+            
+            if (aName.startsWith(queryLower) && !bName.startsWith(queryLower)) return -1;
+            if (!aName.startsWith(queryLower) && bName.startsWith(queryLower)) return 1;
+            return aName.localeCompare(bName);
+        });
+        
+        return results;
+    }
+
+    function searchPosts(query) {
+        const results = [];
+        const lowerQuery = query.toLowerCase();
+        
+        for (let id in posts) {
+            const post = posts[id];
+            const text = (post.text || '').toLowerCase();
+            const authorName = (post.authorName || '').toLowerCase();
+            
+            if (text.includes(lowerQuery) || authorName.includes(lowerQuery)) {
+                results.push({
+                    id: id,
+                    ...post
+                });
+            }
+        }
+        
+        results.sort((a, b) => b.createdAt - a.createdAt);
+        
+        return results;
+    }
+
+    function renderUsers(results) {
+        if (results.length === 0) {
+            return `<div class="empty-state"><img src="sad.png" style="width: 94px;"></i><p>Пользователи не найдены</p><p style="font-size: 0.8rem; margin-top: 8px;">Попробуйте изменить запрос</p></div>`;
+        }
+        
+        return results.map(user => {
+            const avatarContent = user.avatar ? 
+                `<img src="${user.avatar}">` : 
+                `<img src="empty-avatar.png">`;
+            
+            return `
+                <div class="user-card" onclick="window.location.href='profile.html?id=${user.displayName || user.email?.split('@')[0]}'">
+                    <div class="user-avatar">
+                        ${avatarContent}
+                    </div>
+                    <div class="user-info">
+                        <div class="user-name">
+                            ${escapeHtml(user.displayName || user.email?.split('@')[0])}
+                        </div>
+                        <div class="user-username">@${escapeHtml(user.username || (user.displayName || '').toLowerCase())}</div>
+                        ${user.bio ? `<div class="user-bio">${escapeHtml(user.bio.substring(0, 80))}${user.bio.length > 80 ? '...' : ''}</div>` : ''}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function renderPosts(results) {
+        if (results.length === 0) {
+            return `<div class="empty-state"><img src="sad.png" style="width: 94px;"><p>Посты не найдены</p><p style="font-size: 0.8rem; margin-top: 8px;">Попробуйте изменить запрос</p></div>`;
+        }
+        
+        return results.map(post => {
+            const author = users[post.authorId] || {};
+            const avatarContent = author.avatar ? 
+                `<img src="${author.avatar}">` : 
+                `<img src="empty-avatar.png">`;
+            
+            let mediaHtml = '';
+            if (post.mediaUrl) {
+                if (post.mediaType === 'video') {
+                    mediaHtml = `
+                        <div class="post-media">
+                            <video controls onclick="event.stopPropagation()">
+                                <source src="${post.mediaUrl}" type="video/mp4">
+                            </video>
+                        </div>
+                    `;
+                } else {
+                    mediaHtml = `
+                        <div class="post-media">
+                            <img src="${post.mediaUrl}" alt="Post image" onclick="event.stopPropagation(); window.open('${post.mediaUrl}', '_blank')">
+                        </div>
+                    `;
+                }
+            }
+            
+            const likeCount = Object.keys(post.likes || {}).length;
+            const commentCount = (post.comments || []).length;
+            
+            return `
+                <div class="post-card" onclick="window.location.href='post.html?id=${post.id}'">
+                    <div class="post-header" onclick="event.stopPropagation(); window.location.href='profile.html?id=${post.authorName}'">
+                        <div class="post-avatar">
+                            ${avatarContent}
+                        </div>
+                        <div>
+                            <div class="post-author">${escapeHtml(post.authorName)}</div>
+                            <div class="post-time">${formatDate(post.createdAt)}</div>
+                        </div>
+                    </div>
+                    ${post.text ? `<div class="post-text">${escapeHtml(post.text)}</div>` : ''}
+                    ${mediaHtml}
+                </div>
+            `;
+        }).join('');
+    }
+
+    function renderPage() {
+        const resultsUsers = searchQuery ? searchUsers(searchQuery) : [];
+        const resultsPosts = searchQuery ? searchPosts(searchQuery) : [];
+        
+        const html = `
+            <div class="app-container">
+                
+                <div class="main-content">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="Поиск пользователей или постов..." value="${escapeHtml(searchQuery)}">
+                        <button class="search-btn" id="searchBtn">Найти</button>
+                    </div>
+                    
+                    <div class="tabs">
+                        <div class="tab ${currentTab === 'users' ? 'active' : ''}" data-tab="users">
+                            <i class="fas fa-users"></i> Пользователи ${searchQuery ? `(${resultsUsers.length})` : ''}
+                        </div>
+                        <div class="tab ${currentTab === 'posts' ? 'active' : ''}" data-tab="posts">
+                            <i class="fas fa-newspaper"></i> Посты ${searchQuery ? `(${resultsPosts.length})` : ''}
+                        </div>
+                    </div>
+                    
+                    ${searchQuery ? `
+                        <div class="results-count">Найдено: ${currentTab === 'users' ? resultsUsers.length : resultsPosts.length} результатов</div>
+                        <div id="resultsContainer">
+                            ${currentTab === 'users' ? renderUsers(resultsUsers) : renderPosts(resultsPosts)}
+                        </div>
+                    ` : `
+                        <div class="empty-state">
+                            <i class="fas fa-search"></i>
+                            <p>Начните поиск</p>
+                            <p style="font-size: 0.8rem; margin-top: 8px;">Введите запрос в строку выше</p>
+                        </div>
+                    `}
+                </div>
+            </div>
+        `;
+        
+        appDiv.innerHTML = html;
+        
+        document.getElementById('searchInput')?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+        
+        document.getElementById('searchBtn')?.addEventListener('click', performSearch);
+        
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                currentTab = tab.dataset.tab;
+                renderPage();
+            });
+        });
+    }
+    
+    function performSearch() {
+        const input = document.getElementById('searchInput');
+        searchQuery = input.value.trim();
+        renderPage();
+    }
+
+    async function init() {
+        const savedUser = localStorage.getItem('volgura_user') || sessionStorage.getItem('volgura_user');
+        if (!savedUser) {
+            window.location.href = 'login.html';
+            return;
+        }
+        
+        currentUser = JSON.parse(savedUser);
+        
+        try {
+            const [usersData, postsData] = await Promise.all([
+                fetchUsers(),
+                fetchPosts()
+            ]);
+            
+            users = usersData;
+            posts = postsData;
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            const query = urlParams.get('q');
+            if (query) {
+                searchQuery = query;
+            }
+            
+            renderPage();
+        } catch (err) {
+            console.error(err);
+            renderPage();
+        }
+    }
+    
+    init();
+</script>
+</body>
+</html>
