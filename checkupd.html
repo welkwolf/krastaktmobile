@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Проверка обновлений | Крастакт</title>
+    <title></title>
     <style>
         * {
             margin: 0;
@@ -227,7 +227,9 @@
             messagingSenderId: "53885771537",
             appId: "1:53885771537:web:d293118c77625af7c136b0"
         };
-
+        
+		let serverPart;
+		
         const RTDB_URL = "https://krastakt-default-rtdb.firebaseio.com";
 
         function getUrlParams() {
@@ -253,21 +255,11 @@
             }
         }
 
-        function compareVersions(current, server) {
-            if (!current || !server) return false;
-            
-            const currentParts = String(current).split('.').map(Number);
-            const serverParts = String(server).split('.').map(Number);
-            
-            for (let i = 0; i < Math.max(currentParts.length, serverParts.length); i++) {
-                const currentPart = currentParts[i] || 0;
-                const serverPart = serverParts[i] || 0;
-                
-                if (serverPart > currentPart) return true;
-                if (serverPart < currentPart) return false;
-            }
-            return false;
-        }
+       
+function isUpdateNeeded(current, server) {
+    if (!current || !server) return false;
+    return String(current) !== String(server);
+}
 
         function renderContent(currentVersion, serverVersion, needsUpdate, error = null) {
             const contentDiv = document.getElementById('content');
@@ -387,13 +379,13 @@
                     return;
                 }
                 
-                const needsUpdate = compareVersions(currentVersion, serverVersion);
+const needsUpdate = isUpdateNeeded(currentVersion, serverVersion);
                 
                 if (needsUpdate) {
                     renderContent(currentVersion, serverVersion, true);
 					window.location.href = "https://viagramka.ru";
                     setTimeout(() => {
-                        window.location.href = "https://viagramka.ru";
+                        window.location.href = "https://krastakt.ru/update.html";
                     }, 3000);
                 } else {
                     renderContent(currentVersion, serverVersion, false);
